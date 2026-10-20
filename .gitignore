@@ -1,0 +1,62 @@
+# ==========================================
+# Personal Documents & Resume Assets
+# ==========================================
+*.docx
+*.doc
+*.pdf
+Shaurya_Sharma*
+CONVERSATION PREP*
+FINDING PEOPLE*
+
+# ==========================================
+# Personal Outreach Data & Lead Records (STRICTLY PRIVATE)
+# ==========================================
+linkedin_outreach/data/
+linkedin_outreach/data/**
+data/
+**/data/
+*.csv
+contacts-template.csv
+linkedin_outreach/logs/
+*.sqlite
+*.db
+
+# ==========================================
+# Chrome Sessions, Cookies & Profiles
+# ==========================================
+chrome_profile/
+**/chrome_profile/
+**/chrome_profile*
+temp_test_profile/
+temp_test_profile2/
+temp_test_profile*/
+Default/
+Profile */
+
+# ==========================================
+# Python Runtime & Environment Artifacts
+# ==========================================
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+linkedin_outreach/runtime/
+.env
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+
+# ==========================================
+# Temporary & System Files
+# ==========================================
+Downloads/
+*.log
+.DS_Store
+Thumbs.db
+.claude/
+.system_generated/
