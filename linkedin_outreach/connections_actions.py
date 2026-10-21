@@ -86,9 +86,11 @@ def scrape_connections_list(
     engine: BrowserEngine,
     max_count: int = 50,
     progress_callback: Optional[Any] = None,
+    existing_urls: Optional[Set[str]] = None,
 ) -> List[Dict[str, Any]]:
     """
     Navigates to the LinkedIn 1st-degree connections page and scrapes connection cards.
+    Skips existing_urls so subsequent runs retrieve the NEXT batch of connections.
     Extracts: Full Name, Headline, Profile URL, Location, Title, Company.
     """
     def log(msg: str):
@@ -111,9 +113,11 @@ def scrape_connections_list(
         return "".join(c for c in s if ord(c) < 65536).strip()
 
     scraped: List[Dict[str, Any]] = []
-    seen_urls = set()
+    seen_urls = set(u.strip() for u in (existing_urls or []))
     scroll_attempts = 0
-    max_scrolls = max(8, (max_count // 5) + 3)
+    existing_count = len(seen_urls)
+    # Estimate scrolls needed: ~10 connections per scroll
+    max_scrolls = max(35, ((existing_count + max_count) // 3) + 20)
 
     while len(scraped) < max_count and scroll_attempts < max_scrolls:
         # Check both modern LinkedIn structure and legacy .mn-connection-card
@@ -216,19 +220,25 @@ def scrape_connections_list(
                 except Exception:
                     continue
 
-        log(f"Connections scraped so far: {len(scraped)} / {max_count}")
+        log(f"New connections scraped so far: {len(scraped)} / {max_count} (scroll {scroll_attempts + 1}/{max_scrolls})")
         if len(scraped) >= max_count:
             break
 
-        # Scroll the main container to trigger lazy loading of the next batch of connection cards
+        # Scroll the main container and window to trigger lazy loading of connection cards
         page.evaluate("""() => {
+            window.scrollTo(0, document.body.scrollHeight);
             const m = document.querySelector('main');
             if (m) {
                 m.scrollTop = m.scrollHeight;
-            } else {
-                window.scrollBy(0, 1200);
             }
         }""")
+        try:
+            show_more = page.locator("button.scaffold-finite-scroll__load-button, button:has-text('Show more results')").first
+            if show_more.is_visible(timeout=800):
+                show_more.click()
+        except Exception:
+            pass
+
         engine.human_delay(1.5, 2.5)
         scroll_attempts += 1
 

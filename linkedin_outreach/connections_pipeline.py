@@ -109,17 +109,18 @@ class ConnectionsPipeline:
             return {"error": err, "count": 0}
 
         try:
-            # 1. Scrape connection cards
-            raw_connections = scrape_connections_list(
-                page, engine, max_count=max_count, progress_callback=progress_callback
-            )
-            if not raw_connections:
-                log("[WARNING] No connection cards returned.")
-                engine.close()
-                return {"count": 0, "new": 0, "updated": 0}
-
             df = self.load_df()
             existing_urls = set(df["LinkedIn URL"].dropna().str.strip().tolist())
+            log(f"Current database has {len(existing_urls)} known connections. Fetching next {max_count} new connections...")
+
+            # 1. Scrape connection cards, skipping already known connections
+            raw_connections = scrape_connections_list(
+                page, engine, max_count=max_count, progress_callback=progress_callback, existing_urls=existing_urls
+            )
+            if not raw_connections:
+                log("[WARNING] No new connection cards returned.")
+                engine.close()
+                return {"count": 0, "new": 0, "updated": 0}
 
             new_count = 0
             updated_count = 0
