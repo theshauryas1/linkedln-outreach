@@ -10,7 +10,7 @@ LinkedIn DOM Actions for Existing 1st-Degree Connections:
 import re
 import time
 import logging
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Dict, Any, Tuple, Optional, Set
 from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
 
 from .browser_engine import BrowserEngine
