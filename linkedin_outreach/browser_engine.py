@@ -227,7 +227,7 @@ class BrowserEngine:
     def human_type(self, locator, text: str):
         """Types text with natural human cadence without timing out or crashing on contenteditable divs."""
         try:
-            locator.focus()
+            locator.focus(timeout=3000)
             time.sleep(0.3)
             # Natural keystroke cadence: 15-25ms per character finishes 400-char text in ~7 seconds
             delay_ms = random.randint(15, 25)
@@ -236,11 +236,11 @@ class BrowserEngine:
         except Exception as e:
             logger.warning(f"Native sequential typing fallback triggered: {e}")
             try:
-                locator.focus()
+                locator.focus(timeout=2000)
                 locator.evaluate("(el, val) => { el.focus(); document.execCommand('insertText', false, val); }", text)
             except Exception:
                 try:
-                    locator.fill(text)
+                    locator.fill(text, timeout=3000)
                 except Exception:
                     pass
 

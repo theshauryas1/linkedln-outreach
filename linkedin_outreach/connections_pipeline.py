@@ -417,7 +417,7 @@ class ConnectionsPipeline:
                     df.at[idx, "Sent Date"] = today_str
                 elif status_code == "REPLIED":
                     df.at[idx, "Notes"] = f"Replied on or before {today_str}"
-                elif status_code in ["EXCLUDED_ACADEMIA", "REGION_EXCLUDED"]:
+                elif status_code in ["EXCLUDED_ACADEMIA", "REGION_EXCLUDED", "UNREACHABLE", "OVERLAY_FAILED"]:
                     df.at[idx, "Notes"] = note_or_text
                 self.save_df(df)
                 log(f"[STATE SAVED] Immediately committed {name} -> {status_code} to CSV.")
@@ -447,7 +447,7 @@ class ConnectionsPipeline:
             elif status_code == "REPLIED":
                 stats["replies_detected"] += 1
                 engine.human_delay(2, 3)
-            elif status_code == "ALREADY_SENT":
+            elif status_code in ["ALREADY_SENT", "UNREACHABLE", "OVERLAY_FAILED", "EXCLUDED_ACADEMIA", "REGION_EXCLUDED"]:
                 stats["skipped_or_excluded"] += 1
                 engine.human_delay(2, 3)
 

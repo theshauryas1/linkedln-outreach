@@ -418,20 +418,25 @@ def send_connection_dm(
 
         # 2. Click Message button on top card
         msg_btn = page.locator("main section button:has-text('Message'), main section a:has-text('Message')").first
-        if not msg_btn.is_visible(timeout=3000):
-            # Fallback to secondary actions
-            more_btn = page.locator("main section button:has-text('More')").first
-            if more_btn.is_visible(timeout=1500):
-                more_btn.click()
-                time.sleep(1)
-                msg_btn = page.locator("div[role='menu'] div:has-text('Message')").first
+        if not msg_btn.is_visible(timeout=5000):
+            # Check if page is still redirecting or rendering
+            time.sleep(1.5)
+            if not msg_btn.is_visible(timeout=3000):
+                # Fallback to secondary actions
+                more_btn = page.locator("main section button:has-text('More')").first
+                if more_btn.is_visible(timeout=2000):
+                    more_btn.click()
+                    time.sleep(1)
+                    msg_btn = page.locator("div[role='menu'] div:has-text('Message')").first
 
-        if not msg_btn.is_visible(timeout=2000):
+        if not msg_btn.is_visible(timeout=3000):
             # Multimodal Visual Browser Control fallback via Nemotron VL
             logger.info("DOM Message button not visible. Trying multimodal visual element location...")
             clicked = engine.visual_locate_and_click(page, "Message button on profile")
             if not clicked:
-                return "ERROR", "Message button not visible (Not a 1st-degree connection or blocked)"
+                if on_sent_callback:
+                    on_sent_callback(contact, "UNREACHABLE", "Message button not visible on profile")
+                return "UNREACHABLE", "Message button not visible (Not a 1st-degree connection or blocked)"
 
         if msg_btn.is_visible(timeout=1000):
             msg_btn.click()
@@ -454,6 +459,8 @@ def send_connection_dm(
             if dry_run:
                 logger.info(f"[DRY RUN] Would send to {name}:\n{message_text}")
                 return "MSG_SENT", "[DRY RUN] Simulated message (overlay not opened in dry-run)"
+            if on_sent_callback:
+                on_sent_callback(contact, "OVERLAY_FAILED", "Message textarea overlay did not open")
             return "ERROR", "Message textarea overlay did not open"
 
         # 4. CRITICAL SAFEGUARD: Live thread history inspection
@@ -493,7 +500,13 @@ def send_connection_dm(
             close_chat_overlay(page)
             return "MSG_SENT", "[DRY RUN] Simulated connection message delivery"
 
-        # 6. Focus chat box safely without viewport scroll error
+        # 6. Re-locate chat box freshly and focus safely without viewport scroll error
+        chat_box = page.locator(
+            "div[role='textbox'][aria-label*='Write a message'], "
+            "div.msg-form__contenteditable, "
+            "div[contenteditable='true'][role='textbox'], "
+            "div.msg-overlay-conversation-bubble div[contenteditable='true']"
+        ).first
         try:
             chat_box.focus(timeout=2000)
         except Exception:
