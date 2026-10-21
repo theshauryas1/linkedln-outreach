@@ -79,7 +79,7 @@ Rules:
 3. Low-pressure ask (a quick question or 10-minute chat about their experience/challenges).
 4. Output ONLY the message text.
 """
-        return self._call_llm(prompt, fallback=f"Hi {contact.get('First Name', 'there')}, nice to connect. I've been following {contact.get('Company', 'your company')}'s engineering work and would love to exchange perspectives on AI agent reliability if you ever have a moment. Thanks in advance.")
+        return self._call_llm(prompt, fallback=f"Hi {contact.get('First Name', 'there')}, nice to connect. Noticed your focus on {contact.get('Company', 'your company')}'s engineering systems and would love to exchange perspectives on AI agent reliability if you ever have a moment. Thanks in advance.")
 
     def generate_connection_career_opener(
         self,
@@ -134,6 +134,24 @@ CRITICAL SENIORITY LEVEL (MANDATORY):
 - NEVER use the word "senior" to describe Shaurya, his experience level, or the roles he is seeking.
 - NEVER ask for senior roles. Ask for "junior AI engineering roles" or simply "junior AI engineering opportunities" (open to remote or relocation).
 
+CRITICAL TRUTHFULNESS & GROUNDING (MANDATORY):
+- NEVER claim an unverified relationship, prior familiarity, or history that isn't confirmed true.
+- PROHIBITED PHRASES (Strictly Forbidden):
+  * "I've been following your work..."
+  * "I've been following [company]'s work..."
+  * "I've been watching how [company]..."
+  * "I came across your work..."
+  * "I've been impressed by..."
+  * "Your work stands out..."
+  * Any other assumed, fabricated, or flattering familiarity.
+- HOW TO OPEN INSTEAD (Concrete, Direct & Fact-Based):
+  Open ONLY with a direct, concrete observation from their profile data (their role, specific tech stack, system they build, or domain mentioned in their headline or about section):
+  * "Hi [Name], noticed your focus on [specific tech/system] at [Company]..."
+  * "Hi [Name], saw that you lead [specific function] at [Company]..."
+  * "Hi [Name], with your role building [specific product/area] at [Company]..."
+  * "Hi [Name], saw your work on [specific open source/research/system mentioned in profile]..."
+  Make it a clean, matter-of-fact observation based entirely on what is written on their profile, without pretending to have known them before today.
+
 RECIPIENT:
 - First Name: {first_name}
 - Title: {title}
@@ -146,11 +164,12 @@ MESSAGE FORMATION RULES:
 1. Length: 2 to 3 sentences maximum. Clean, conversational, peer-to-peer.
 2. Perspective: First-person builder ("I", "my"). Shaurya is reaching out directly as a junior/early-career AI engineer, NOT an agency or recruiter.
 3. Structure:
-   - Line 1: Natural greeting referencing their work, domain, or research focus (from their company, headline, or about section) without fake praise or flattery.
+   - Line 1: Direct, concrete observation from their profile data (e.g. "noticed your focus on [topic/area] at [Company]" or "saw that you lead [area] at [Company]"). NEVER claim unverified familiarity or say "I've been following your work" or "impressed by [company]".
    - Line 2: Integrate the matching facts from the chosen 1 or 2 source blocks with their exact figures.
    - Line 3: Direct, low-pressure ask: Shaurya is exploring junior AI engineering roles (open to remote or relocation). Ask if their team or network has upcoming openings or if they would be open to a brief conversation. (NEVER say "senior" and NEVER say "discussing AI engineering talent" or "talent for upcoming cycles").
 4. Rhythm & Cadence: Vary sentence lengths naturally. Use natural contractions (I'm, I've) and follow a detailed technical sentence with a shorter punchy sentence.
 5. Prohibited:
+   - Absolutely NO claims of prior familiarity, following their work, watching their company, or fake admiration.
    - Absolutely NO mention of "senior" (Shaurya is a junior engineer).
    - Absolutely NO em dashes (never use '—', use hyphens '-' or commas ',').
    - No AI buzzwords (delve, leverage, robust, seamless, tapestry, crucial, moreover).
@@ -160,7 +179,7 @@ MESSAGE FORMATION RULES:
         text_context = f"{title} {headline} {company} {industry} {about_summary}".lower()
         if any(k in text_context for k in ["clinic", "health", "med", "hospital", "pharma", "biotech"]):
             fallback_msg = (
-                f"Hi {first_name}, came across your work in {industry} at {company}. "
+                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
                 f"Independently, I built a clinical NLP reasoning engine hitting 94.2% top-1 and 100% top-3 diagnostic accuracy "
                 f"across a 1,000-case benchmark with zero hallucinated evidence, and trained CNNs for an 18,000-plus image brain MRI dataset "
                 f"ranked by model reliability. I'm exploring junior AI engineering roles (open to remote or relocation) and wanted "
@@ -168,7 +187,7 @@ MESSAGE FORMATION RULES:
             )
         elif any(k in text_context for k in ["vision", "imaging", "radiology", "mri", "scan", "cnn"]):
             fallback_msg = (
-                f"Hi {first_name}, came across your work in {industry} at {company}. "
+                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
                 f"As a personal project, I owned the full pipeline for an 18,000-plus image brain MRI dataset, training five CNN architectures "
                 f"with an AI agent that ranks models by reliability over raw accuracy and added Grad-CAM explainability. "
                 f"I'm exploring junior AI engineering roles (open to remote or relocation) and wanted to see if your team is hiring."
@@ -176,7 +195,7 @@ MESSAGE FORMATION RULES:
         else:
             # General tech / software engineering / AI
             fallback_msg = (
-                f"Hi {first_name}, came across your work in {industry} at {company}. "
+                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
                 f"At Greybox I design an agentic AI system on Google Cloud combining hybrid keyword-and-semantic retrieval across 2,000 video transcripts (100% groundedness), "
                 f"and independently built NexusSwarm, a 28-agent AutoGen platform that cut average task latency by 62% across a 97-task benchmark suite. "
                 f"I'm exploring junior AI engineering roles (open to remote or relocation) and wanted to check if your team has upcoming openings."
@@ -249,6 +268,68 @@ Rules:
         clean = re.sub(r"\b(remote or relocated AI engineering talent)\b", "a junior AI engineer (open to remote or relocation)", clean, flags=re.IGNORECASE)
         clean = re.sub(r"\b(talent for upcoming cycles)\b", "junior openings for upcoming cycles", clean, flags=re.IGNORECASE)
         clean = re.sub(r"\b(discussing AI engineering talent)\b", "discussing potential junior AI engineering openings", clean, flags=re.IGNORECASE)
+
+        # Strip unverified familiarity and false history claims (e.g. "I've been following your work")
+        clean = re.sub(
+            r"\bI(?:'ve| have) been following\s+([A-Z][a-zA-Z0-9\s&,.'-]+?'s work)\b",
+            r"saw \1",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\bI(?:'ve| have) been following\s+your work\s+(?:on|in|with|at)?\b",
+            "saw your work on",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\bI(?:'ve| have) been following\s+(the work (?:your team is doing in|at|coming out of))\b",
+            r"saw \1",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\bI(?:'ve| have) been following\b",
+            "saw",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\bI(?:'ve| have) been watching\s+(?:how\s+)?",
+            "noticed ",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\bI(?:'ve| have) been impressed by\s+",
+            "noticed ",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\b(?:I\s+)?came across your work in\s+",
+            "noticed your focus on ",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\b(?:I\s+)?came across your work at\s+",
+            "saw your work at ",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\b(?:I\s+)?came across your work\s+",
+            "saw your work ",
+            clean,
+            flags=re.IGNORECASE
+        )
+        clean = re.sub(
+            r"\byour work at [^,]+ stands out\b",
+            "noticed your role",
+            clean,
+            flags=re.IGNORECASE
+        )
 
         # Run through li-human slop filter if available
         try:

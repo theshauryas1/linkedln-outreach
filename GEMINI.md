@@ -38,3 +38,16 @@ Whenever the user's request involves LinkedIn, social content, or humanizing tex
 
 11. **Content Audits**: When given analytics or past post performance data:
     - Follow the [`li-audit`](file:///c:/New%20folder%20(2)/.agents/skills/li-audit/SKILL.md) workflow.
+
+## Strict Grounding & Anti-Fabrication Rules for Outreach & DMs
+
+1. **Never Claim Unverified Familiarity or False History**:
+   - The generator must NEVER claim a relationship, familiarity, or history that isn't confirmed true.
+   - Absolutely NO "I've been following your work", "I've been following [Company]'s work", "I came across your work", "I've been watching [Company]", or "I've been impressed by [Company]'s work".
+   - Open based ONLY on concrete and verifiable facts from their profile: their actual role, what they specifically build, or a direct factual observation from their headline, about section, or company domain.
+
+2. **Junior Seniority Level Only**:
+   - Strictly identify as a Junior AI Engineer / Early-Career AI Engineer. Never claim or request senior roles.
+
+3. **Clean Typography**:
+   - Zero em dashes (`—`). Use hyphens (`-`) or commas (`,`).

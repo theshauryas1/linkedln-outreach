@@ -13,6 +13,10 @@ Automatically route and execute LinkedIn workflows based on user prompt intent w
 - **Carousels & Multi-Slide**: Route to `li-carousel`.
 - **Profile / Headline Reviews**: Route to `li-profile`.
 - **Outreach & DMs**: Route to `li-dm`.
-- **Inbox Sorting & Responses**: Route to `li-inbox`.
 - **Content Repurposing**: Route to `li-repurpose`.
 - **Analytics & Post Performance**: Route to `li-audit`.
+
+## Mandatory Grounding & Seniority Rules:
+- **No Unverified Familiarity**: Never claim unconfirmed history or familiarity (no "I've been following your work", "impressed by [company]", "came across your work"). Open strictly based on concrete, verified observations from their profile (role, tech, specific system built).
+- **Junior AI Engineer Only**: Always position as Junior AI Engineer / early-career builder.
+- **Zero Em Dashes**: Hyphens and commas only.
