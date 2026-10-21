@@ -233,13 +233,18 @@ def scrape_connections_list(
             }
         }""")
         try:
+            page.mouse.wheel(0, 2000)
+        except Exception:
+            pass
+
+        try:
             show_more = page.locator("button.scaffold-finite-scroll__load-button, button:has-text('Show more results')").first
             if show_more.is_visible(timeout=800):
                 show_more.click()
         except Exception:
             pass
 
-        engine.human_delay(1.5, 2.5)
+        engine.human_delay(1.2, 2.0)
         scroll_attempts += 1
 
     log(f"Scraping complete. Retrieved {len(scraped)} 1st-degree connections.")
