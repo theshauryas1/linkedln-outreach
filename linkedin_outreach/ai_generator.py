@@ -28,7 +28,7 @@ class NvidiaNimGenerator:
     }
 
     VERBATIM_SOURCE_BLOCKS = """
-**NexusSwarm** - Built and deployed a 28-agent, 7-stage multi-agent platform spanning planning, engineering, QA, security, and DevOps, automating the full software and AI engineering workflow from requirements through deployment, using AutoGen, FastAPI, React, and NVIDIA NIM. Cut average task latency by 62%, validated against a 97-task benchmark suite.
+**NexusSwarm** - 28-agent multi-agent platform on AutoGen, FastAPI, React and NVIDIA NIM. Executive/manager/worker hierarchy automating software and AI engineering from requirements through deployment. A dynamic model router cut average task time by 62% on NIM's free tier by routing tasks to right-sized models instead of one large model. Includes guardrails against prompt injection, secret leakage and hallucinated imports. Evaluated with a 100-task, 9-category benchmark suite and a resilience test report where 4 of 5 attack tests were blocked.
 
 **Greybox (AI Product Developer, current role)** - Designing and deploying an agentic AI system on Google Cloud combining hybrid keyword-and-semantic retrieval, scaling to roughly 2,000 video transcripts for on-brand content generation. Validated in a pilot study achieving 66.7% top-3 retrieval accuracy, 100% groundedness with zero hallucinated techniques, and an 81.4/100 persona-fidelity score.
 
@@ -122,7 +122,12 @@ FIXED VERBATIM SOURCE BLOCKS FOR SHAURYA SHARMA:
 {self.VERBATIM_SOURCE_BLOCKS}
 
 INSTRUCTION TO NEMOTRON:
-Treat these four blocks as fixed, verbatim source material - pull facts only from them, never from a fresh read or summary of the CV file, and never invent or soften a number. Pick whichever one or two blocks best match the connection's role, background, or company domain, and write the message around those facts only.
+Treat these four blocks as fixed, verbatim source material - pull facts only from them, never from a fresh read or summary of the CV file, and never invent, round up, or infer numbers or features. Pick whichever one or two blocks best match the connection's role, background, or company domain, and write the message around those facts only.
+
+Strict Fact Source Rules (Zero Invention / Rounding):
+- Use ONLY the provided facts; never invent, round up, or infer others.
+- NexusSwarm: 28-agent multi-agent platform on AutoGen, FastAPI, React and NVIDIA NIM. Executive/manager/worker hierarchy automating software and AI engineering from requirements through deployment. Dynamic model router cut average task time by 62% on NIM's free tier by routing tasks to right-sized models instead of one large model. Guardrails against prompt injection, secret leakage and hallucinated imports. Evaluated with a 100-task, 9-category benchmark suite and a resilience test report where 4 of 5 attack tests were blocked.
+- Never cite 97 tasks or unverified benchmarks; it is strictly a 100-task, 9-category benchmark suite.
 
 Strict Attribution Rules:
 - NexusSwarm, Brain MRI Tumor Classification, and Clinical Reasoning Engine are Shaurya's personal/independent projects.
@@ -197,7 +202,7 @@ MESSAGE FORMATION RULES:
             fallback_msg = (
                 f"Hi {first_name}, noticed your focus on {industry} at {company}. "
                 f"At Greybox I design an agentic AI system on Google Cloud combining hybrid keyword-and-semantic retrieval across 2,000 video transcripts (100% groundedness), "
-                f"and independently built NexusSwarm, a 28-agent AutoGen platform that cut average task latency by 62% across a 97-task benchmark suite. "
+                f"and independently built NexusSwarm, a 28-agent multi-agent platform where a dynamic model router cut average task time by 62% on NIM's free tier (evaluated across a 100-task benchmark). "
                 f"I'm exploring junior AI engineering roles (open to remote or relocation) and wanted to check if your team has upcoming openings."
             )
 

@@ -51,3 +51,11 @@ Whenever the user's request involves LinkedIn, social content, or humanizing tex
 
 3. **Clean Typography**:
    - Zero em dashes (`—`). Use hyphens (`-`) or commas (`,`).
+
+4. **NexusSwarm Fact Source (Strict Grounding - Zero Invention / Rounding)**:
+   - Use ONLY these verified facts; never invent, round up, or infer others:
+     * **Platform**: 28-agent multi-agent platform on AutoGen, FastAPI, React and NVIDIA NIM.
+     * **Architecture**: Executive/manager/worker hierarchy automating software and AI engineering from requirements through deployment.
+     * **Model Router**: A dynamic model router cut average task time by 62% on NIM's free tier by routing tasks to right-sized models instead of one large model.
+     * **Guardrails**: Includes guardrails against prompt injection, secret leakage and hallucinated imports.
+     * **Evaluation**: Evaluated with a 100-task, 9-category benchmark suite and a resilience test report where 4 of 5 attack tests were blocked.
