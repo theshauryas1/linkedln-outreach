@@ -98,17 +98,19 @@ Rules:
         headline = contact.get("Headline", "")
         role_type = archetype or self.detect_role_archetype(title, headline)
         first_name = contact.get("First Name", "there")
-        company = contact.get("Company", "your team")
+        raw_company = str(contact.get("Company", "")).strip()
+        company = "" if not raw_company or raw_company.lower() in ["nan", "none", "null"] else raw_company
+        company_phrase = f" at {company}" if company else ""
         location = contact.get("Location", "abroad")
 
         if company_intel is None:
             try:
                 from .company_researcher import company_researcher
-                company_intel = company_researcher.research_company(company, headline, title)
+                company_intel = company_researcher.research_company(company or "tech", headline, title)
             except Exception:
                 company_intel = {
                     "industry": "technology",
-                    "core_business": f"{company} engineering systems",
+                    "core_business": f"{company or 'engineering'} systems",
                     "ai_angle": "production AI agents and workflow orchestration",
                 }
 
@@ -148,8 +150,9 @@ Select 1 or 2 projects or experiences from the verified source blocks above that
 MESSAGE FORMATION RULES (MANDATORY ORDER & STRUCTURE):
 1. Personalized Opening (1 sentence):
    Open with a direct, concrete observation from their profile:
-   * "Hi {first_name}, noticed your focus on [specific tech/system] at {company}."
-   * "Hi {first_name}, saw your work on [specific system/domain] at {company}."
+   * "Hi {first_name}, noticed your focus on [specific tech/system]{company_phrase}."
+   * "Hi {first_name}, saw your work on [specific system/domain]{company_phrase}."
+   * If no specific company is listed, simply say: "Hi {first_name}, noticed your focus on [specific tech/system]."
    * Strictly forbid: "I've been following your work", "impressed by", or false familiarity.
 2. Experience/Project Body (1 or 2 sentences):
    Feature 1 or 2 verified projects/experiences from the source blocks above that directly fit their role.
@@ -172,21 +175,21 @@ CRITICAL CONSTRAINTS:
         text_context = f"{title} {headline} {company} {industry} {about_summary}".lower()
         if any(k in text_context for k in ["clinic", "health", "med", "hospital", "pharma", "biotech"]):
             fallback_msg = (
-                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
+                f"Hi {first_name}, noticed your focus on {industry}{company_phrase}. "
                 f"Independently, I built a clinical NLP reasoning engine hitting 94.2% top-1 and 100% top-3 diagnostic accuracy "
                 f"across a 1,000-case benchmark with zero hallucinated evidence, and trained CNNs for an 18,000-plus image brain MRI dataset "
                 f"ranked by model reliability. I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
             )
         elif any(k in text_context for k in ["vision", "imaging", "radiology", "mri", "scan", "cnn"]):
             fallback_msg = (
-                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
+                f"Hi {first_name}, noticed your focus on {industry}{company_phrase}. "
                 f"As a personal project, I owned the full pipeline for an 18,000-plus image brain MRI dataset, training five CNN architectures "
                 f"with an AI agent that ranks models by reliability over raw accuracy and added Grad-CAM explainability. "
                 f"I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
             )
         elif any(k in text_context for k in ["product", "growth", "content", "rag", "retrieval", "search", "marketing"]):
             fallback_msg = (
-                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
+                f"Hi {first_name}, noticed your focus on {industry}{company_phrase}. "
                 f"At Greybox, where I work as an AI Product Developer, I designed an agentic AI system on Google Cloud combining hybrid retrieval "
                 f"across roughly 2,000 video transcripts, achieving 66.7% top-3 retrieval accuracy and 100% groundedness. "
                 f"I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
@@ -200,7 +203,7 @@ CRITICAL CONSTRAINTS:
             )
         else:
             fallback_msg = (
-                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
+                f"Hi {first_name}, noticed your focus on {industry}{company_phrase}. "
                 f"I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents that automates requirements to deployment, "
                 f"with a dynamic model router, an LLM gateway and guardrails against prompt injection, secret leakage and hallucinated imports. "
                 f"Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. "

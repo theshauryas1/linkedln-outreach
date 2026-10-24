@@ -59,7 +59,7 @@ TIER_1_EUROPE = [
     r"\bunited kingdom\b", r"\buk\b", r"\blondon\b", r"\bengland\b", r"\bscotland\b",
     r"\bwales\b", r"\bmanchester\b", r"\bedinburgh\b", r"\bbirmingham\b", r"\bcambridge\b",
     r"\boxford\b", r"\bbristol\b", r"\bleeds\b", r"\bbelfast\b", r"\bnorthern ireland\b",
-    r"\bireland\b", r"\bdublin\b", r"\bcork\b", r"\bgalway\b",
+    r"\bireland\b", r"\bdublin\b", r"\bcork\b", r"\bgalway\b", r"\bsouthampton\b",
     # Western, Central & Northern Europe
     r"\bgermany\b", r"\bberlin\b", r"\bmunich\b", r"\bfrankfurt\b", r"\bhamburg\b",
     r"\bnetherlands\b", r"\bamsterdam\b", r"\brotterdam\b", r"\butrecht\b",
@@ -71,7 +71,7 @@ TIER_1_EUROPE = [
     r"\bfinland\b", r"\bhelsinki\b",
     r"\baustria\b", r"\bvienna\b",
     r"\bbelgium\b", r"\bbrussels\b",
-    r"\bspain\b", r"\bbarcelona\b", r"\bmadrid\b",
+    r"\bspain\b", r"\bbarcelona\b", r"\bmadrid\b", r"\bzaragoza\b",
     r"\bportugal\b", r"\blisbon\b", r"\bporto\b",
     r"\bitaly\b", r"\bmilan\b", r"\brome\b",
     r"\bpoland\b", r"\bwarsaw\b", r"\bkrakow\b",
@@ -81,7 +81,10 @@ TIER_1_EUROPE = [
     r"\bestonia\b", r"\btallinn\b",
     r"\bluxembourg\b",
     r"\bcyprus\b",
-    r"\beurope\b"
+    r"\beurope\b",
+    # Australia & New Zealand (Tier 1 English-Speaking Overseas Tech Hubs)
+    r"\baustralia\b", r"\bsydney\b", r"\bmelbourne\b", r"\bbrisbane\b", r"\bperth\b",
+    r"\bnew zealand\b", r"\bauckland\b"
 ]
 
 TIER_2_NORTH_AMERICA = [
@@ -91,13 +94,14 @@ TIER_2_NORTH_AMERICA = [
     r"\bwashington\b", r"\baustin\b", r"\btexas\b", r"\bhouston\b", r"\bdallas\b",
     r"\bboston\b", r"\bmassachusetts\b", r"\bchicago\b", r"\billinois\b",
     r"\blos angeles\b", r"\bdenver\b", r"\bcolorado\b", r"\batlanta\b", r"\bgeorgia\b",
-    r"\bmiami\b", r"\bflorida\b", r"\bphiladelphia\b", r"\bpennsylvania\b",
+    r"\bmiami\b", r"\bflorida\b", r"\borlando\b", r"\bphiladelphia\b", r"\bpennsylvania\b",
     r"\bsan diego\b", r"\bsan jose\b", r"\bphoenix\b", r"\barizona\b",
     r"\bpittsburgh\b", r"\bbaltimore\b", r"\bmaryland\b", r"\bvirginia\b",
     r"\bnorth carolina\b", r"\braleigh\b", r"\bcharlotte\b",
     # Canada
     r"\bcanada\b", r"\btoronto\b", r"\bvancouver\b", r"\bmontreal\b", r"\bontario\b",
-    r"\bbritish columbia\b", r"\bquebec\b", r"\bottawa\b", r"\bwaterloo\b"
+    r"\bbritish columbia\b", r"\bquebec\b", r"\bottawa\b", r"\bwaterloo\b",
+    r"\balberta\b", r"\bedmonton\b", r"\bcalgary\b"
 ]
 
 TIER_3_SINGAPORE = [
