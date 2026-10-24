@@ -133,7 +133,7 @@ class ConnectionsPipeline:
                 location = conn.get("Location", "")
                 if resolve_locations and not location:
                     log(f"Inspecting profile location: {conn['Full Name']}...")
-                    location = inspect_connection_location(page, engine, url)
+                    location = inspect_connection_location(page, engine, url, conn_dict=conn)
                     conn["Location"] = location
                     engine.human_delay(1.5, 3)
 
@@ -169,6 +169,8 @@ class ConnectionsPipeline:
                         df.at[idx, "Region Tier"] = tier_label
                         if str(df.at[idx, "Status"]) in ["RETRIEVED", "QUEUED_LATER", "", "nan"]:
                             df.at[idx, "Status"] = status
+                    if conn.get("About"):
+                        df.at[idx, "About"] = conn.get("About")
                     updated_count += 1
                 else:
                     new_row = {
@@ -185,6 +187,7 @@ class ConnectionsPipeline:
                         "Sent Date": "",
                         "Followup Date": "",
                         "Notes": f"Scraped {datetime.now().strftime('%Y-%m-%d')}",
+                        "About": conn.get("About", ""),
                     }
                     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
                     new_count += 1
@@ -203,6 +206,7 @@ class ConnectionsPipeline:
         self,
         max_messages: int = 15,
         dry_run: bool = False,
+        openers_only: bool = False,
         progress_callback: Optional[Callable[[str], None]] = None,
     ) -> Dict[str, Any]:
         """
@@ -269,70 +273,73 @@ class ConnectionsPipeline:
         # =========================================================================
         # PHASE 1: Process 4-5 Day Follow-Ups (MSG_SENT -> FOLLOWUP_SENT)
         # =========================================================================
-        log("\n--- Phase 1: Checking Follow-ups on Previously Sent Messages (4-5 Days) ---")
-        msg_sent_rows = df[df["Status"] == "MSG_SENT"].copy()
-        log(f"Found {len(msg_sent_rows)} connections in MSG_SENT status.")
+        if not openers_only:
+            log("\n--- Phase 1: Checking Follow-ups on Previously Sent Messages (4-5 Days) ---")
+            msg_sent_rows = df[df["Status"] == "MSG_SENT"].copy()
+            log(f"Found {len(msg_sent_rows)} connections in MSG_SENT status.")
 
-        for idx, row in msg_sent_rows.iterrows():
-            if (stats["openers_sent"] + stats["followups_sent"]) >= max_messages:
-                break
+            for idx, row in msg_sent_rows.iterrows():
+                if (stats["openers_sent"] + stats["followups_sent"]) >= max_messages:
+                    break
 
-            sent_date_str = str(row.get("Sent Date", "")).strip()
-            if not sent_date_str:
-                continue
-
-            try:
-                sent_d = datetime.strptime(sent_date_str, "%Y-%m-%d").date()
-                days_elapsed = (today - sent_d).days
-            except Exception:
-                continue
-
-            if days_elapsed >= 4:
-                name = row.get("Full Name", "Contact")
-                url = row.get("LinkedIn URL", "")
-                log(f"\n[Follow-Up Check] {name} ({url}) - {days_elapsed} days elapsed since first message.")
-
-                # Check if prospect replied
-                if check_connection_reply(page, engine, row.to_dict()):
-                    log(f"[HALT] Prospect {name} has replied! Halting automation and marking REPLIED.")
-                    df.at[idx, "Status"] = "REPLIED"
-                    df.at[idx, "Notes"] = f"Replied on or before {today_str}"
-                    stats["replies_detected"] += 1
-                    outreach_memory.record_thread_detected(url, name, "Replied in chat thread", status="REPLIED")
-                    self.save_df(df)
+                sent_date_str = str(row.get("Sent Date", "")).strip()
+                if not sent_date_str:
                     continue
 
-                # Generate low-pressure follow-up
-                followup_text = nim_generator.generate_connection_followup(row.to_dict(), self.sender_profile)
-                log(f"Drafted follow-up text:\n{followup_text}")
+                try:
+                    sent_d = datetime.strptime(sent_date_str, "%Y-%m-%d").date()
+                    days_elapsed = (today - sent_d).days
+                except Exception:
+                    continue
 
-                def on_followup_sent(contact_dict: Dict[str, Any], status_code: str, note_or_text: str):
-                    if status_code == "MSG_SENT":
-                        df.at[idx, "Status"] = "FOLLOWUP_SENT"
-                        df.at[idx, "Followup Date"] = today_str
-                    elif status_code == "REPLIED":
+                if days_elapsed >= 4:
+                    name = row.get("Full Name", "Contact")
+                    url = row.get("LinkedIn URL", "")
+                    log(f"\n[Follow-Up Check] {name} ({url}) - {days_elapsed} days elapsed since first message.")
+
+                    # Check if prospect replied
+                    if check_connection_reply(page, engine, row.to_dict()):
+                        log(f"[HALT] Prospect {name} has replied! Halting automation and marking REPLIED.")
                         df.at[idx, "Status"] = "REPLIED"
                         df.at[idx, "Notes"] = f"Replied on or before {today_str}"
-                    self.save_df(df)
+                        stats["replies_detected"] += 1
+                        outreach_memory.record_thread_detected(url, name, "Replied in chat thread", status="REPLIED")
+                        self.save_df(df)
+                        continue
 
-                status_code, reason = send_connection_dm(
-                    page,
-                    engine,
-                    row.to_dict(),
-                    message_text=followup_text,
-                    dry_run=dry_run,
-                    on_sent_callback=on_followup_sent,
-                )
-                log(f"Result: {status_code} - {reason}")
-                engine.cleanup_screenshots()
+                    # Generate low-pressure follow-up
+                    followup_text = nim_generator.generate_connection_followup(row.to_dict(), self.sender_profile)
+                    log(f"Drafted follow-up text:\n{followup_text}")
 
-                if status_code in ["MSG_SENT", "FOLLOWUP_SENT"]:
-                    stats["followups_sent"] += 1
-                elif status_code == "REPLIED":
-                    stats["replies_detected"] += 1
+                    def on_followup_sent(contact_dict: Dict[str, Any], status_code: str, note_or_text: str):
+                        if status_code == "MSG_SENT":
+                            df.at[idx, "Status"] = "FOLLOWUP_SENT"
+                            df.at[idx, "Followup Date"] = today_str
+                        elif status_code == "REPLIED":
+                            df.at[idx, "Status"] = "REPLIED"
+                            df.at[idx, "Notes"] = f"Replied on or before {today_str}"
+                        self.save_df(df)
 
-                if not dry_run and status_code in ["MSG_SENT", "FOLLOWUP_SENT"]:
-                    engine.human_delay(15, 25)
+                    status_code, reason = send_connection_dm(
+                        page,
+                        engine,
+                        row.to_dict(),
+                        message_text=followup_text,
+                        dry_run=dry_run,
+                        on_sent_callback=on_followup_sent,
+                    )
+                    log(f"Result: {status_code} - {reason}")
+                    engine.cleanup_screenshots()
+
+                    if status_code in ["MSG_SENT", "FOLLOWUP_SENT"]:
+                        stats["followups_sent"] += 1
+                    elif status_code == "REPLIED":
+                        stats["replies_detected"] += 1
+
+                    if not dry_run and status_code in ["MSG_SENT", "FOLLOWUP_SENT"]:
+                        engine.human_delay(15, 25)
+        else:
+            log("\n--- Skipping Phase 1 (openers_only mode active) ---")
 
         # =========================================================================
         # PHASE 2: Dispatch New Openers to Eligible Connections

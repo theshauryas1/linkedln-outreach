@@ -105,14 +105,16 @@ def cmd_connections(args):
         console.print(f"[bold green][OK] Scrape complete:[/bold green] {res}")
 
     elif subaction == "run":
+        openers_only = getattr(args, "openers_only", False)
         console.print(Panel.fit(
             f"[bold magenta]Running 1st-Degree Connections Outreach Batch[/bold magenta]\n"
-            f"Max Messages: {effective_limit} | Dry Run: {args.dry_run}",
+            f"Max Messages: {effective_limit} | Dry Run: {args.dry_run} | Openers Only: {openers_only}",
             border_style="magenta"
         ))
         res = connections_pipeline.run_outreach_batch(
             max_messages=effective_limit,
             dry_run=args.dry_run,
+            openers_only=openers_only,
             progress_callback=lambda m: console.print(f"[dim]{m}[/dim]"),
         )
         console.print(f"[bold green][OK] Batch complete:[/bold green] {res}")
@@ -181,6 +183,7 @@ def main():
     p_conn.add_argument("--limit", type=int, default=None, help="Limit for scrape or messages")
     p_conn.add_argument("--no-resolve", action="store_true", help="Do not visit profiles to inspect location")
     p_conn.add_argument("--dry-run", action="store_true", help="Simulate without sending")
+    p_conn.add_argument("--openers-only", action="store_true", help="Skip followups and only send initial openers to new connections")
 
     # mcp
     subparsers.add_parser("mcp", help="Run the custom Stdio MCP server (JSON-RPC 2.0)")

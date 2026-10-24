@@ -231,6 +231,10 @@ def scrape_connections_list(
             if (m) {
                 m.scrollTop = m.scrollHeight;
             }
+            const scroller = document.querySelector('.scaffold-layout__main');
+            if (scroller) {
+                scroller.scrollTop = scroller.scrollHeight;
+            }
         }""")
         try:
             page.mouse.wheel(0, 2000)
@@ -238,9 +242,13 @@ def scrape_connections_list(
             pass
 
         try:
-            show_more = page.locator("button.scaffold-finite-scroll__load-button, button:has-text('Show more results')").first
+            show_more = page.locator("button:has-text('Load more'), button:has-text('Show more results'), button:has-text('Show more'), button.scaffold-finite-scroll__load-button").first
             if show_more.is_visible(timeout=800):
                 show_more.click()
+            else:
+                show_more.scroll_into_view_if_needed(timeout=500)
+                if show_more.is_visible(timeout=500):
+                    show_more.click()
         except Exception:
             pass
 
@@ -264,6 +272,22 @@ def extract_top_card_location(page: Page) -> str:
                     }
                 }
             }
+            // Fallback: Scan text preceding "Contact info" in main
+            const main = document.querySelector("main");
+            if (main) {
+                const txt = main.innerText || "";
+                const idx = txt.indexOf("Contact info");
+                if (idx !== -1) {
+                    const before = txt.substring(0, idx).split("\\n").map(s => s.trim()).filter(Boolean);
+                    for (let i = before.length - 1; i >= 0; i--) {
+                        const line = before[i];
+                        if (line === "·" || line === "•" || line === "Contact info" || line.includes("follower") || line.includes("connection")) continue;
+                        if (line.length > 2 && line.length < 80) {
+                            return line;
+                        }
+                    }
+                }
+            }
             return "";
         }""")
         if loc:
@@ -284,14 +308,22 @@ def inspect_connection_location(
     page: Page,
     engine: BrowserEngine,
     profile_url: str,
+    conn_dict: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
     Visits a connection profile and extracts their location from the top-card.
+    If conn_dict is provided, also populates conn_dict["About"].
     """
     try:
         page.goto(profile_url, wait_until="domcontentloaded", timeout=25000)
         engine.human_delay(1.5, 3)
-        return extract_top_card_location(page)
+        loc = extract_top_card_location(page)
+        if conn_dict is not None and not conn_dict.get("About"):
+            try:
+                conn_dict["About"] = extract_profile_about(page)
+            except Exception:
+                pass
+        return loc
     except Exception as e:
         logger.debug(f"Failed to inspect location for {profile_url}: {e}")
         return ""

@@ -139,10 +139,10 @@ RECIPIENT:
 
 ROLE-MATCHING INSTRUCTION:
 Select 1 or 2 projects or experiences from the verified source blocks above that directly fit the recipient's role, company, or technical domain:
-- Multi-Agent Systems / LLM Routing / Distributed Infra / AI Engineering: Feature NexusSwarm (28-agent platform, 62% latency cut on NVIDIA NIM's free tier from ~45s to ~17s, guardrails blocking 4 attack tests). Optionally pair with Greybox or IIIT Pune.
+- Multi-Agent Systems / LLM Routing / Distributed Infra / AI Engineering: Feature NexusSwarm (28-agent platform, 62% latency cut on NVIDIA NIM's free tier from ~45s to ~17s, guardrails blocking 4 attack tests). Optionally pair with Greybox, Brain MRI Tumor Classification, or IIIT Pune.
 - AI Product Management / Content / RAG / Enterprise GenAI / Cloud: Feature Greybox (current role as AI Product Developer, agentic GCP system, ~2,000 transcripts, 66.7% top-3 accuracy, 100% groundedness) and/or NexusSwarm.
-- Healthcare / Health Tech / Biotech / Clinical NLP: Feature the Clinical Reasoning Engine (94.2% top-1, 100% top-3, 1,000 cases, zero hallucinated evidence) and/or Brain MRI Tumor Classification.
-- Computer Vision / Medical Imaging / Radiology / Deep Learning: Feature Brain MRI Tumor Classification (18,000-plus image dataset, 5 CNN architectures, Grad-CAM).
+- Healthcare / Health Tech / Biotech / Clinical NLP: Feature the Clinical Reasoning Engine (94.2% top-1, 100% top-3, 1,000 cases, zero hallucinated evidence) and/or Brain MRI Tumor Classification (18,000-plus image dataset, 5 CNN architectures, reliability ranking, Grad-CAM).
+- Computer Vision / Medical Imaging / Radiology / Deep Learning / CNNs: Feature Brain MRI Tumor Classification (18,000-plus image dataset, 5 CNN architectures, reliability ranking, Grad-CAM). You can freely pair or highlight the Brain MRI project whenever deep learning, vision, or medical data is relevant.
 - IIIT Pune Alumni / Academic / Indian tech ecosystem: You may also mention his Computer Science background from IIIT Pune.
 
 MESSAGE FORMATION RULES (MANDATORY ORDER & STRUCTURE):
