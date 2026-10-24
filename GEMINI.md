@@ -52,27 +52,16 @@ Whenever the user's request involves LinkedIn, social content, or humanizing tex
 3. **Clean Typography**:
    - Zero em dashes (`—`). Use hyphens (`-`) or commas (`,`).
 
-4. **NexusSwarm Fact Source & Outreach Brief (Strict Grounding - Zero Invention / Rounding)**:
-   - When writing outreach messages for Shaurya, use only the facts in this brief.
-   - Never claim to follow, admire or know someone's work unless that's verified, and never open with a line like that.
-   - Pick one or two facts that fit the person's role or company, and don't dump everything.
-   - Never state a number that isn't listed here.
-   - Don't put a pitch or CV in the first message, and output only the message text.
-   - Share the repo link only after the person replies or asks, or in a follow-up after applying.
-   - **Never say NexusSwarm is deployed or live**, because it isn't right now.
-   - **Platform & Architecture**: NexusSwarm is a 28-agent hierarchical platform, with executive, manager and worker agents, that automates requirements to deployment. It's built with AutoGen, FastAPI, React and TypeScript, NVIDIA NIM and MCP servers, and it has a dynamic model router, an LLM gateway and guardrails against prompt injection, secret leakage and hallucinated imports.
-   - **Model Router**: The router cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, and the message must always say free tier.
-   - **Evaluation Suite**: The eval suite has 107 tasks across 9 categories, with 100 used per run.
-   - **Resilience Suite**: The resilience suite blocked 4 attack tests, covering hallucination traps, prompt injection, remote code execution patterns and a CVE plus fake package combo, plus one deployment-penalty scoring check. **Never say 4 of 5 attacks blocked**.
-   - **Agent Count**: If the README says 31 agents, the public number is still 28 core agents, and the 3 validation agents are a detail only if asked.
+4. **Experience & Project Portfolio (Strict Grounding - Zero Invention / Rounding)**:
+   - When writing outreach messages for Shaurya, select 1 or 2 relevant projects or experiences tailored to the person's role and domain.
+   - **NexusSwarm (Personal Project)**: 28-agent hierarchical platform of executive, manager and worker agents automating requirements to deployment. Built with AutoGen, FastAPI, React/TypeScript, NVIDIA NIM, and MCP servers. Dynamic model router cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. Eval suite has 107 tasks across 9 categories (100 used per run). Resilience suite blocked 4 attack tests (hallucination traps, prompt injection, RCE patterns, CVE+fake package combo). NEVER say deployed or live.
+   - **Greybox (Current Professional Role - AI Product Developer)**: Designing and deploying an agentic AI system on Google Cloud combining hybrid keyword-and-semantic retrieval across roughly 2,000 video transcripts for on-brand content generation. Validated in a pilot study achieving 66.7% top-3 retrieval accuracy, 100% groundedness with zero hallucinated techniques, and an 81.4/100 persona-fidelity score.
+   - **Brain MRI Tumor Classification (Personal Project - Computer Vision)**: Owned the full pipeline for an 18,000-plus image brain MRI dataset, training and benchmarking five CNN architectures. Built an AI agent that ranks models by reliability rather than raw accuracy, selecting EfficientNet-B4, with Grad-CAM explainability for clinical interpretability.
+   - **Clinical Reasoning Engine (Personal Project - Healthcare NLP)**: Built a clinical NLP reasoning engine turning unstructured discharge summaries into structured timelines with LLM-driven differential diagnosis, hitting 94.2% top-1 and 100% top-3 diagnostic accuracy across a 1,000-case benchmark, with every flagged finding grounded to exact source text and zero hallucinated evidence.
+   - **IIIT Pune (Education / Academic Background)**: B.Tech in Computer Science and Engineering from Indian Institute of Information Technology, Pune (IIIT Pune).
 
-5. **Mandatory Outreach Message Structure (Verbatim NexusSwarm Block - No Manipulation or Project Mixing)**:
-   - When writing outreach with NexusSwarm, do NOT manipulate or rewrite facts, and do NOT mix in other projects/experiences (e.g. Brain MRI CNN or Clinical NLP).
-   - Format:
-     * One: Personalized 1-sentence opening observation based on profile facts:
-       `Hi [Name], noticed your focus on [specific tech/system] at [Company].` (or `saw your work at [Company].`)
-     * Two: Exact unmanipulated NexusSwarm block:
-       `I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents that automates requirements to deployment, with a dynamic model router, an LLM gateway and guardrails against prompt injection, secret leakage and hallucinated imports. Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. It is evaluated on a suite across 9 categories, and its resilience tests blocked 4 attack tests.`
-     * Three: The ask:
-       `I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings.`
-   - Constraints: Zero em dashes, no links/URLs, never say deployed or live, strictly junior AI engineering roles.
+5. **Mandatory Outreach Message Structure**:
+   - One: Personalized 1-sentence opening observation based on profile facts (`Hi [Name], noticed your focus on [specific tech/system] at [Company].`).
+   - Two: 1 or 2 matching projects/experiences from the portfolio above tailored to the recipient's role (e.g. NexusSwarm for agentic/systems/infra; Greybox for product/RAG/content; Clinical NLP for healthcare; Brain MRI for vision/radiology; IIIT Pune for alumni/peers).
+   - Three: The ask: `I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings.`
+   - Constraints: Zero em dashes, no links/URLs, never say deployed or live, strictly junior AI engineering roles, strict attribution (Greybox = current role; NexusSwarm, MRI, Clinical = personal projects; IIIT Pune = education). Never claim NexusSwarm was built at Greybox.

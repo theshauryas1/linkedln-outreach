@@ -20,10 +20,16 @@ Automatically route and execute LinkedIn workflows based on user prompt intent w
 - **No Unverified Familiarity**: Never claim unconfirmed history or familiarity (no "I've been following your work", "impressed by [company]", "came across your work"). Open strictly based on concrete, verified observations from their profile (role, tech, specific system built).
 - **Junior AI Engineer Only**: Always position as Junior AI Engineer / early-career builder.
 - **Zero Em Dashes**: Hyphens and commas only.
-- **NexusSwarm Fact Source (Strict Grounding - Zero Invention / Rounding)**: Use only facts in this brief; never invent, round up, or infer numbers/features. NexusSwarm is a 28-agent hierarchical platform (executive, manager, worker agents) automating requirements to deployment; built with AutoGen, FastAPI, React/TypeScript, NVIDIA NIM, MCP servers; dynamic model router cut average task time by 62% on NVIDIA NIM's free tier (from ~45s to ~17s; message must always say free tier); LLM gateway with guardrails against prompt injection, secret leakage, hallucinated imports; eval suite has 107 tasks across 9 categories (100 used per run); resilience suite blocked 4 attack tests (traps, injection, RCE patterns, CVE+fake package combo) + 1 deployment penalty check. NEVER say NexusSwarm is deployed or live (it is not right now). NEVER say 4 of 5 attacks blocked (say blocked 4 attack tests). Public number is 28 core agents (3 validation agents only if asked). No pitch/CV in first message; repo link shared only after reply/ask or follow-up after applying.
-- **Mandatory Message Structure (Verbatim NexusSwarm Block - No Manipulation or Project Mixing)**:
+- **Experience Portfolio (Strict Grounding - Zero Invention / Rounding)**:
+  * **NexusSwarm (Personal Project)**: 28-agent hierarchical platform (AutoGen, FastAPI, React/TS, NVIDIA NIM, MCP) automating requirements to deployment; dynamic model router cut average task time by 62% on NVIDIA NIM's free tier (~45s to ~17s; message must always say free tier); LLM gateway with guardrails blocking 4 attack tests; 107-task eval suite across 9 categories. NEVER say deployed or live.
+  * **Greybox (Current Professional Role - AI Product Developer)**: Agentic AI system on GCP with hybrid keyword-and-semantic retrieval across ~2,000 video transcripts, 66.7% top-3 accuracy, 100% groundedness, 81.4/100 persona-fidelity score.
+  * **Brain MRI Tumor Classification (Personal Project - Computer Vision)**: 18,000-plus image brain MRI dataset, 5 CNN architectures, reliability-ranking AI agent, Grad-CAM explainability.
+  * **Clinical Reasoning Engine (Personal Project - Healthcare NLP)**: Clinical NLP reasoning engine, 94.2% top-1 and 100% top-3 diagnostic accuracy across 1,000-case benchmark, zero hallucinated evidence.
+  * **IIIT Pune (Education / Academic Background)**: B.Tech in Computer Science and Engineering from IIIT Pune.
+- **Role-Based Message Structure**:
   1. Personalized 1-sentence opening observation based on profile facts (`Hi [Name], noticed your focus on [specific tech/system] at [Company].`).
-  2. Exact unmanipulated NexusSwarm block: `I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents that automates requirements to deployment, with a dynamic model router, an LLM gateway and guardrails against prompt injection, secret leakage and hallucinated imports. Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. It is evaluated on a suite across 9 categories, and its resilience tests blocked 4 attack tests.`
+  2. 1 or 2 matching projects/experiences from the portfolio above tailored to the reader's role.
   3. The ask: `I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings.`
   No em dashes, no link, never say deployed or live, strictly junior AI engineer roles.
+
 
