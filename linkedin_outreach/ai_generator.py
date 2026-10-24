@@ -192,9 +192,10 @@ CRITICAL CONSTRAINTS:
 GOLDEN REFERENCE EXAMPLE (Architect):
 "Hi Alex, I came across your profile and your work on multi-agent systems at Cohere. I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents, with a dynamic model router and LLM gateway. Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
 
-Output ONLY the raw message text. Start directly with the greeting: "Hi {first_name},".
+CRITICAL INSTRUCTION:
+Output ONLY the raw message text itself. Do NOT output any reasoning, commentary, planning notes, or checklist. Start directly with the greeting: "Hi {first_name},".
 """
-        # Determine archetype/domain fallback using exact verbatim blocks
+        # Determine archetype/domain: clinical vs tech/NexusSwarm
         text_context = f"{title} {headline} {company} {industry} {about_summary}".lower()
         if any(k in text_context for k in ["clinic", "health", "med", "hospital", "pharma", "biotech"]):
             fallback_msg = (
@@ -204,23 +205,50 @@ Output ONLY the raw message text. Start directly with the greeting: "Hi {first_n
                 f"ranked by model reliability. I'm exploring junior AI engineering roles (open to remote or relocation) and wanted "
                 f"to check if your team has upcoming openings."
             )
-        elif any(k in text_context for k in ["vision", "imaging", "radiology", "mri", "scan", "cnn"]):
-            fallback_msg = (
-                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
-                f"As a personal project, I owned the full pipeline for an 18,000-plus image brain MRI dataset, training five CNN architectures "
-                f"with an AI agent that ranks models by reliability over raw accuracy and added Grad-CAM explainability. "
-                f"I'm exploring junior AI engineering roles (open to remote or relocation) and wanted to see if your team is hiring."
-            )
-        else:
-            # General tech / software engineering / AI
-            fallback_msg = (
-                f"Hi {first_name}, I came across your profile and your work on {industry} at {company}. "
-                f"I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents, with a dynamic model router and LLM gateway. "
-                f"Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. "
-                f"I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
-            )
+            return self._call_llm(prompt, fallback=fallback_msg)
 
-        return self._call_llm(prompt, fallback=fallback_msg)
+        # For NexusSwarm: generate personalized 1-sentence opening observation, then append the EXACT verbatim NexusSwarm block and ask
+        opener_prompt = f"""You are drafting ONLY the opening 1-sentence observation for a LinkedIn direct message from Shaurya Sharma to an existing 1st-degree connection.
+
+RECIPIENT:
+- First Name: {first_name}
+- Title: {title}
+- Company: {company}
+- Location: {location}
+- Industry / Focus: {industry} ({core_business}){about_context}
+
+RULES FOR THE OPENER:
+1. Exactly ONE short sentence starting with "Hi {first_name},".
+2. Open with a concrete, direct, and fact-based observation from their profile:
+   * "Hi {first_name}, noticed your focus on [specific tech/system] at {company}."
+   * "Hi {first_name}, saw your work on [specific system/domain] at {company}."
+   * "Hi {first_name}, saw that you lead [function] at {company}."
+3. Strictly forbidden:
+   * DO NOT say "I've been following your work", "impressed by", "came across your work".
+   * No em dashes (use hyphens or commas).
+4. Output ONLY the single opening sentence, nothing else. No commentary, no checklist.
+"""
+        fallback_opener = f"Hi {first_name}, noticed your focus on {industry} at {company}."
+        opener = self._call_llm(opener_prompt, fallback=fallback_opener)
+
+        # Clean opener to ensure it starts with Hi {first_name}, and ends with punctuation
+        opener = opener.strip().split("\n")[0].strip('"').strip("'")
+        if not opener.lower().startswith(f"hi {first_name.lower()}"):
+            opener = f"Hi {first_name}, {opener}"
+        if not opener.endswith((".", "!", "?")):
+            opener += "."
+
+        nexus_exact_block = (
+            "I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents "
+            "that automates requirements to deployment, with a dynamic model router, an LLM gateway and guardrails "
+            "against prompt injection, secret leakage and hallucinated imports. Routing cut average task time by 62% "
+            "on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. "
+            "It is evaluated on a suite across 9 categories, and its resilience tests blocked 4 attack tests."
+        )
+        ask_block = "I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
+
+        full_msg = f"{opener} {nexus_exact_block} {ask_block}"
+        return self._sanitize_and_humanize(full_msg)
 
     def generate_connection_followup(
         self,
@@ -255,9 +283,35 @@ Rules:
         if not text:
             return ""
 
-        # Extract message start if preamble was included
-        if "Hi " in text:
-            text = "Hi " + text.split("Hi ", 1)[1]
+        # Remove <think>...</think> tags if present
+        text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+
+        # Check if the model put the final message inside quotes (common when models draft after thinking)
+        quoted_blocks = re.findall(r'"(Hi\s+[A-Z][^"]{40,})"', text, flags=re.DOTALL)
+        if quoted_blocks:
+            text = quoted_blocks[-1]
+        elif "Let me draft:" in text:
+            text = text.split("Let me draft:", 1)[1].strip()
+            if "Hi " in text:
+                text = "Hi " + text.split("Hi ", 1)[1]
+        elif "Hi " in text:
+            # If multiple "Hi " blocks exist (e.g. revisions/drafts), pick the last complete one that contains the ask
+            candidates = [("Hi " + chunk) for chunk in text.split("Hi ")[1:]]
+            valid_candidates = [c for c in candidates if any(k in c.lower() for k in ["openings", "opening", "chat", "conversation", "radar"])]
+            if valid_candidates:
+                text = valid_candidates[-1]
+            else:
+                text = "Hi " + text.split("Hi ", 1)[1]
+
+        # Clean trailing internal checklist / commentary (e.g. "Check constraints:", "Wait, need to...", "\n\n1. Name...")
+        for stop_marker in ["\nCheck constraints:", "\nWait, need to", "\n1. Name NexusSwarm", "\nRecipient:", "\nStructure:"]:
+            if stop_marker in text:
+                prefix = text.split(stop_marker, 1)[0].strip()
+                if len(prefix) > 140 and any(k in prefix.lower() for k in ["opening", "openings", "team", "hiring"]):
+                    text = prefix
+                elif stop_marker in ["\nCheck constraints:", "\nWait, need to"]:
+                    # If it's pure model reasoning commentary, remove the trailing chunk even if prefix was shorter
+                    text = prefix
 
         # Typography and unicode normalizations
         clean = (
