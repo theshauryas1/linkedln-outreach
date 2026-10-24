@@ -173,20 +173,26 @@ RECIPIENT:
 - Role Archetype: {role_type}
 - Industry / Focus: {industry} ({core_business}){about_context}
 
-MESSAGE FORMATION RULES:
-1. Length: 2 to 3 sentences maximum. Clean, conversational, peer-to-peer.
-2. Perspective: First-person builder ("I", "my"). Shaurya is reaching out directly as a junior/early-career AI engineer, NOT an agency or recruiter.
-3. Structure:
-   - Line 1: Direct, concrete observation from their profile data (e.g. "noticed your focus on [topic/area] at [Company]" or "saw that you lead [area] at [Company]"). NEVER claim unverified familiarity or say "I've been following your work" or "impressed by [company]".
-   - Line 2: Integrate the matching facts from the chosen 1 or 2 source blocks with their exact figures.
-   - Line 3: Direct, low-pressure ask: Shaurya is exploring junior AI engineering roles (open to remote or relocation). Ask if their team or network has upcoming openings or if they would be open to a brief conversation. (NEVER say "senior" and NEVER say "discussing AI engineering talent" or "talent for upcoming cycles").
-4. Rhythm & Cadence: Vary sentence lengths naturally. Use natural contractions (I'm, I've) and follow a detailed technical sentence with a shorter punchy sentence.
-5. Prohibited:
-   - Absolutely NO claims of prior familiarity, following their work, watching their company, or fake admiration.
-   - Absolutely NO mention of "senior" (Shaurya is a junior engineer).
-   - Absolutely NO em dashes (never use '—', use hyphens '-' or commas ',').
-   - No AI buzzwords (delve, leverage, robust, seamless, tapestry, crucial, moreover).
-6. Output ONLY the raw message text. Start directly with the greeting: "Hi {first_name},".
+MESSAGE FORMATION RULES (MANDATORY ORDER & STRUCTURE):
+Every message uses this EXACT order, in two or three sentences:
+1. One: Name NexusSwarm and its architecture: a 28-agent hierarchical platform of executive, manager and worker agents.
+2. Two: Name one or two features that fit the reader's role: model router, LLM gateway, guardrails, or the eval suite across 9 categories.
+3. Three: Give one verified result: 62% lower average task time on NVIDIA NIM's free tier, roughly 45 seconds to roughly 17, or 4 attack tests blocked.
+4. Four: Give one plain sentence of what that means technically, never an invented business number.
+5. Then the ask: Exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings.
+
+CRITICAL CONSTRAINTS:
+- No em dashes (never use '—', use hyphens '-' or commas ',').
+- No links (never attach URLs).
+- NEVER say deployed or live (NexusSwarm is not live or deployed right now).
+- Never claim unverified familiarity (no "I've been following your work" or "impressed by [company]").
+- Never mention "senior" (Shaurya is strictly a junior AI engineer).
+- Never invent business numbers or unlisted metrics.
+
+GOLDEN REFERENCE EXAMPLE (Architect):
+"Hi Alex, I came across your profile and your work on multi-agent systems at Cohere. I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents, with a dynamic model router and LLM gateway. Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
+
+Output ONLY the raw message text. Start directly with the greeting: "Hi {first_name},".
 """
         # Determine archetype/domain fallback using exact verbatim blocks
         text_context = f"{title} {headline} {company} {industry} {about_summary}".lower()
@@ -208,10 +214,10 @@ MESSAGE FORMATION RULES:
         else:
             # General tech / software engineering / AI
             fallback_msg = (
-                f"Hi {first_name}, noticed your focus on {industry} at {company}. "
-                f"At Greybox I design an agentic AI system on Google Cloud combining hybrid keyword-and-semantic retrieval across 2,000 video transcripts (100% groundedness), "
-                f"and independently built NexusSwarm, a 28-agent hierarchical platform where a dynamic model router cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17. "
-                f"I'm exploring junior AI engineering roles (open to remote or relocation) and wanted to check if your team has upcoming openings."
+                f"Hi {first_name}, I came across your profile and your work on {industry} at {company}. "
+                f"I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents, with a dynamic model router and LLM gateway. "
+                f"Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. "
+                f"I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
             )
 
         return self._call_llm(prompt, fallback=fallback_msg)

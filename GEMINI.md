@@ -65,3 +65,14 @@ Whenever the user's request involves LinkedIn, social content, or humanizing tex
    - **Evaluation Suite**: The eval suite has 107 tasks across 9 categories, with 100 used per run.
    - **Resilience Suite**: The resilience suite blocked 4 attack tests, covering hallucination traps, prompt injection, remote code execution patterns and a CVE plus fake package combo, plus one deployment-penalty scoring check. **Never say 4 of 5 attacks blocked**.
    - **Agent Count**: If the README says 31 agents, the public number is still 28 core agents, and the 3 validation agents are a detail only if asked.
+
+5. **Mandatory Outreach Message Order & Golden Example**:
+   - Every message uses this order, in two or three sentences:
+     * One, name NexusSwarm and its architecture: a 28-agent hierarchical platform of executive, manager and worker agents.
+     * Two, name one or two features that fit the reader's role: model router, LLM gateway, guardrails, or the eval suite across 9 categories.
+     * Three, give one verified result: 62% lower average task time on NVIDIA NIM's free tier, roughly 45 seconds to roughly 17, or 4 attack tests blocked.
+     * Four, give one plain sentence of what that means technically, never an invented business number.
+     * Then the ask.
+     * No em dashes, no link, never say deployed or live.
+   - **Golden Architect Example**:
+     > "Hi Alex, I came across your profile and your work on multi-agent systems at Cohere. I built NexusSwarm, a 28-agent hierarchical platform of executive, manager and worker agents, with a dynamic model router and LLM gateway. Routing cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, so simple tasks no longer wait on a large model. I'm exploring junior AI engineering roles, open to remote or relocation, and wondered if your team has openings."
