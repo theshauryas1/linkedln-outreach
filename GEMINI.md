@@ -52,10 +52,16 @@ Whenever the user's request involves LinkedIn, social content, or humanizing tex
 3. **Clean Typography**:
    - Zero em dashes (`—`). Use hyphens (`-`) or commas (`,`).
 
-4. **NexusSwarm Fact Source (Strict Grounding - Zero Invention / Rounding)**:
-   - Use ONLY these verified facts; never invent, round up, or infer others:
-     * **Platform**: 28-agent multi-agent platform on AutoGen, FastAPI, React and NVIDIA NIM.
-     * **Architecture**: Executive/manager/worker hierarchy automating software and AI engineering from requirements through deployment.
-     * **Model Router**: A dynamic model router cut average task time by 62% on NIM's free tier by routing tasks to right-sized models instead of one large model.
-     * **Guardrails**: Includes guardrails against prompt injection, secret leakage and hallucinated imports.
-     * **Evaluation**: Evaluated with a 100-task, 9-category benchmark suite and a resilience test report where 4 of 5 attack tests were blocked.
+4. **NexusSwarm Fact Source & Outreach Brief (Strict Grounding - Zero Invention / Rounding)**:
+   - When writing outreach messages for Shaurya, use only the facts in this brief.
+   - Never claim to follow, admire or know someone's work unless that's verified, and never open with a line like that.
+   - Pick one or two facts that fit the person's role or company, and don't dump everything.
+   - Never state a number that isn't listed here.
+   - Don't put a pitch or CV in the first message, and output only the message text.
+   - Share the repo link only after the person replies or asks, or in a follow-up after applying.
+   - **Never say NexusSwarm is deployed or live**, because it isn't right now.
+   - **Platform & Architecture**: NexusSwarm is a 28-agent hierarchical platform, with executive, manager and worker agents, that automates requirements to deployment. It's built with AutoGen, FastAPI, React and TypeScript, NVIDIA NIM and MCP servers, and it has a dynamic model router, an LLM gateway and guardrails against prompt injection, secret leakage and hallucinated imports.
+   - **Model Router**: The router cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, and the message must always say free tier.
+   - **Evaluation Suite**: The eval suite has 107 tasks across 9 categories, with 100 used per run.
+   - **Resilience Suite**: The resilience suite blocked 4 attack tests, covering hallucination traps, prompt injection, remote code execution patterns and a CVE plus fake package combo, plus one deployment-penalty scoring check. **Never say 4 of 5 attacks blocked**.
+   - **Agent Count**: If the README says 31 agents, the public number is still 28 core agents, and the 3 validation agents are a detail only if asked.

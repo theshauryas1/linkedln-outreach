@@ -28,7 +28,7 @@ class NvidiaNimGenerator:
     }
 
     VERBATIM_SOURCE_BLOCKS = """
-**NexusSwarm** - 28-agent multi-agent platform on AutoGen, FastAPI, React and NVIDIA NIM. Executive/manager/worker hierarchy automating software and AI engineering from requirements through deployment. A dynamic model router cut average task time by 62% on NIM's free tier by routing tasks to right-sized models instead of one large model. Includes guardrails against prompt injection, secret leakage and hallucinated imports. Evaluated with a 100-task, 9-category benchmark suite and a resilience test report where 4 of 5 attack tests were blocked.
+**NexusSwarm** - 28-agent hierarchical platform, with executive, manager and worker agents, that automates requirements to deployment. Built with AutoGen, FastAPI, React and TypeScript, NVIDIA NIM and MCP servers, and has a dynamic model router, an LLM gateway and guardrails against prompt injection, secret leakage and hallucinated imports. The router cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, and the message must always say free tier. The eval suite has 107 tasks across 9 categories, with 100 used per run. The resilience suite blocked 4 attack tests, covering hallucination traps, prompt injection, remote code execution patterns and a CVE plus fake package combo, plus one deployment-penalty scoring check. (Never say 4 of 5 attacks blocked. Never say NexusSwarm is deployed or live, because it isn't right now. If the README says 31 agents, the public number is still 28 core agents, and the 3 validation agents are a detail only if asked).
 
 **Greybox (AI Product Developer, current role)** - Designing and deploying an agentic AI system on Google Cloud combining hybrid keyword-and-semantic retrieval, scaling to roughly 2,000 video transcripts for on-brand content generation. Validated in a pilot study achieving 66.7% top-3 retrieval accuracy, 100% groundedness with zero hallucinated techniques, and an 81.4/100 persona-fidelity score.
 
@@ -122,12 +122,20 @@ FIXED VERBATIM SOURCE BLOCKS FOR SHAURYA SHARMA:
 {self.VERBATIM_SOURCE_BLOCKS}
 
 INSTRUCTION TO NEMOTRON:
-Treat these four blocks as fixed, verbatim source material - pull facts only from them, never from a fresh read or summary of the CV file, and never invent, round up, or infer numbers or features. Pick whichever one or two blocks best match the connection's role, background, or company domain, and write the message around those facts only.
-
-Strict Fact Source Rules (Zero Invention / Rounding):
-- Use ONLY the provided facts; never invent, round up, or infer others.
-- NexusSwarm: 28-agent multi-agent platform on AutoGen, FastAPI, React and NVIDIA NIM. Executive/manager/worker hierarchy automating software and AI engineering from requirements through deployment. Dynamic model router cut average task time by 62% on NIM's free tier by routing tasks to right-sized models instead of one large model. Guardrails against prompt injection, secret leakage and hallucinated imports. Evaluated with a 100-task, 9-category benchmark suite and a resilience test report where 4 of 5 attack tests were blocked.
-- Never cite 97 tasks or unverified benchmarks; it is strictly a 100-task, 9-category benchmark suite.
+When writing outreach messages for Shaurya, use only the facts in this brief.
+- Never claim to follow, admire or know someone's work unless that's verified, and never open with a line like that.
+- Pick one or two facts that fit the person's role or company, and don't dump everything.
+- Never state a number that isn't listed here.
+- Don't put a pitch or CV in the first message, and output only the message text.
+- Share the repo link only after the person replies or asks, or in a follow-up after applying.
+- NEVER say NexusSwarm is deployed or live, because it isn't right now.
+- NexusSwarm is a 28-agent hierarchical platform, with executive, manager and worker agents, that automates requirements to deployment.
+- Built with AutoGen, FastAPI, React and TypeScript, NVIDIA NIM and MCP servers.
+- Has a dynamic model router, an LLM gateway and guardrails against prompt injection, secret leakage and hallucinated imports.
+- The router cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17, and the message must always say free tier.
+- The eval suite has 107 tasks across 9 categories, with 100 used per run.
+- The resilience suite blocked 4 attack tests, covering hallucination traps, prompt injection, remote code execution patterns and a CVE plus fake package combo, plus one deployment-penalty scoring check. Never say 4 of 5 attacks blocked.
+- If the README says 31 agents, the public number is still 28 core agents, and the 3 validation agents are a detail only if asked.
 
 Strict Attribution Rules:
 - NexusSwarm, Brain MRI Tumor Classification, and Clinical Reasoning Engine are Shaurya's personal/independent projects.
@@ -202,7 +210,7 @@ MESSAGE FORMATION RULES:
             fallback_msg = (
                 f"Hi {first_name}, noticed your focus on {industry} at {company}. "
                 f"At Greybox I design an agentic AI system on Google Cloud combining hybrid keyword-and-semantic retrieval across 2,000 video transcripts (100% groundedness), "
-                f"and independently built NexusSwarm, a 28-agent multi-agent platform where a dynamic model router cut average task time by 62% on NIM's free tier (evaluated across a 100-task benchmark). "
+                f"and independently built NexusSwarm, a 28-agent hierarchical platform where a dynamic model router cut average task time by 62% on NVIDIA NIM's free tier, from roughly 45 seconds to roughly 17. "
                 f"I'm exploring junior AI engineering roles (open to remote or relocation) and wanted to check if your team has upcoming openings."
             )
 
@@ -335,6 +343,15 @@ Rules:
             clean,
             flags=re.IGNORECASE
         )
+
+        # Ensure NexusSwarm is never described as deployed or live
+        clean = re.sub(r"\b(?:deployed|deploying)\s+NexusSwarm\b", "built NexusSwarm", clean, flags=re.IGNORECASE)
+        clean = re.sub(r"\bNexusSwarm\s+is\s+deployed\b", "NexusSwarm is built", clean, flags=re.IGNORECASE)
+        clean = re.sub(r"\bdeployed\s+and\s+live\b", "built", clean, flags=re.IGNORECASE)
+
+        # Enforce resilience test phrasing: never say "4 of 5 attacks blocked"
+        clean = re.sub(r"\b4\s+(?:of|out\s+of)\s+5\s+attack\s+tests?\s+(?:were\s+)?blocked\b", "blocked 4 attack tests", clean, flags=re.IGNORECASE)
+        clean = re.sub(r"\b4\s+(?:of|out\s+of)\s+5\s+attacks?\s+(?:were\s+)?blocked\b", "blocked 4 attack tests", clean, flags=re.IGNORECASE)
 
         # Run through li-human slop filter if available
         try:
